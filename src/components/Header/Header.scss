@@ -1,9 +1,31 @@
-.menu {
+.header {
+  height: 40px;
+  box-shadow: 0 0 5px 0 #999;
+  background: #47c4c7;
+  padding: 0 30px;
   a {
-    color: cadetblue;
+    color: #fff;
+  }
+  .blog-icon {
+    height: 40px;
+    line-height: 40px;
+    float: left;
+    a {
+      font-size: 20px;
+    }
+  }
+  .header-list {
+    float: right;
+    li {
+      float: left;
+      height: 40px;
+      line-height: 40px;
+      width: 20px;
+      margin-left: 20px;
+      i {
+        font-size: 18px;
+      }
+    }
   }
 }
-.activeRoute {
-  font-weight: bold;
-  text-decoration: none;
-}
+

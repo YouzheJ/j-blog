@@ -93,6 +93,7 @@
   "author": "Istvan Jano <janoist1@gmail.com> *universal feature",
   "license": "MIT",
   "dependencies": {
+    "@youzhej/jutils": "^1.0.2",
     "axios": "^0.15.2",
     "babel-cli": "^6.5.1",
     "babel-core": "^6.3.17",

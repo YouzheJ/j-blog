@@ -9,7 +9,8 @@ export default Object.freeze({
     {name: 'viewport', content: 'width=device-width, initial-scale=1'}
   ],
   link: [
-    {rel: 'shortcut icon', href: '/favicon.ico'}
+    {rel: 'shortcut icon', href: '/favicon.ico'},
+    {rel: 'stylesheet', href: '//at.alicdn.com/t/font_573398_hpkll2uh871ra4i.css'}
   ],
   script: [],
   style: []
