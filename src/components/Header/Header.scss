@@ -3,6 +3,11 @@
   box-shadow: 0 0 5px 0 #999;
   background: #47c4c7;
   padding: 0 30px;
+  .header-wrapper {
+    max-width: 1200px;
+    min-width: 300px;
+    margin: 0 auto;
+  }
   a {
     color: #fff;
   }
