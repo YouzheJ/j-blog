@@ -2,4 +2,107 @@
 .md-base {
   text-align: left;
   padding: 10px;
+  font-size: 14px;
+
+  // 标题
+  h1 {font-size: 36px;}
+  h2 {font-size: 32px;}
+  h3 {font-size: 28px;}
+  h4 {font-size: 24px;}
+  h5 {font-size: 20px;}
+  h6 {font-size: 16px;}
+
+  // 链接
+  a {
+    color: #29ca89;
+    &:hover {
+      color: #23D18B;
+    }
+  }
+
+  // 图片
+  img {
+    max-width: 100%;
+  }
+
+  // 分割线
+  hr {
+    border: 0;
+    height: 2px;
+    background-color: #e3e3e3;
+    margin: 5px 0;
+  }
+
+  // 代码
+  pre {
+    background: #efefef;
+    padding: 10px;
+    margin: 10px;
+    box-shadow: 2px 2px 3px 1px #cfcfcf;
+  }
+
+  code {
+    color: #333;
+    font-size: 14px;
+  }
+
+  // 引用
+  blockquote {
+    border-left: 3px solid #e3e3e3;
+    padding-left: 10px;
+  }
+
+  // 表格
+  table {
+    margin: 10px;
+    border: 2px solid #cfcfcf;
+  }
+  thead {
+    background: #e3e3e3;
+  }
+  tbody {
+
+  }
+  tr {
+
+  }
+  th, td {
+    font-weight: normal;
+    padding: 10px;
+    border: 1px solid #cfcfcf;
+  }
+
+  // 列表
+  ul {
+    margin: 10px;
+    li {
+      height: 16px;
+      line-height: 16px;
+      list-style: disc inside;
+    }
+    ul {
+      li {list-style-type: square;}
+      ul {
+        li {list-style-type: circle;}
+      }
+    }
+  }
+
+  ol {
+    margin: 10px;
+    li {
+      height: 16px;
+      line-height: 16px;
+      list-style: decimal-leading-zero inside;
+    }
+    ol {
+      li {list-style-type: upper-latin;}
+      ol {
+        li {list-style-type: lower-latin;}
+        ol {
+          li {list-style-type: lower-roman;}
+        }
+      }
+    }
+  }
 }

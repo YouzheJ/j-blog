@@ -8,7 +8,7 @@ class EditView extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      viewContent: `<div class="md-base" data-reactid="24">
+      viewContent: `
       <h1 id="标题">标题</h1>
       <h2 id="标题2">标题2</h2>
       <h3 id="标题3">标题3</h3>
@@ -20,9 +20,42 @@ class EditView extends React.Component {
       <li>bb</li>
       </ul>
       <hr>
+      <p><img src="https://img.alicdn.com/imgextra/i4/503912635/TB2m.FJoBTH8KJjy0FiXXcRsXXa_!!503912635.jpg" alt="baidu"><img src="http://aims.17zwd.com/nsys/42/a5dcb25b16870972d158e8615ae4863c.jpg" alt="baidu"></p>
       <pre><code>function test () {
        // todo
-      }</code></pre></div>`,
+      }</code></pre>
+      <table>
+      <thead>
+      <tr>
+      <th id="33">33</th>
+      <th id="33">33</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>33</td>
+      <td>33</td>
+      </tr>
+      <tr>
+      <td>33</td>
+      <td>33</td>
+      </tr>
+      <tr>
+      <td>33</td>
+      <td>33</td>
+      </tr>
+      </tbody>
+      </table>
+      <ol>
+      <li>aa</li>
+      <li>aa<ol>
+      <li>aa</li>
+      <li>aa<ol>
+      <li>aa</li>
+      <li>aa<ol>
+      <li>a</li>
+      <li>aa</li></ol></li></ol></li></ol></li>
+      </ol>`,
       mdText: ''
     }
   }
@@ -40,8 +73,15 @@ class EditView extends React.Component {
     }
   }
   componentWillMount () {
-    this.converter = new showdown.Converter()
+    this.converter = new showdown.Converter({
+      simplifiedAutoLink: true,
+      excludeTrailingPunctuationFromURLs: true,
+      simpleLineBreaks: true,
+      omitExtraWLInCodeBlocks: true,
+      customizedHeaderId: true // ## Sample header {real-id}     will use real-id as id
+    })
     this.converter.setFlavor('github')
+    this.converter.setOption('simplifiedAutoLink', true)
   }
   render () {
     const { mdText, viewContent } = this.state
@@ -62,12 +102,14 @@ class EditView extends React.Component {
         <div className='view-wrapper'>
           <div className='view-content'>
             <p className='view-title'>预览</p>
-            {
-              <div
-                className='md-base'
-                dangerouslySetInnerHTML={{__html: viewContent}}
-              />
-            }
+            <div className='md-wrapper'>
+              {
+                <div
+                  className='md-base'
+                  dangerouslySetInnerHTML={{__html: viewContent}}
+                />
+              }
+            </div>
           </div>
         </div>
       </div>
