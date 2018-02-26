@@ -2,7 +2,7 @@
 import CoreLayout from '../layouts/CoreLayout/CoreLayout'
 import Home from './Home'
 // import List from './List'
-// import Edit from './Edit'
+import Edit from './Edit'
 import Page from './Page'
 
 /*  Note: Instead of using JSX, we recommend using react-router
@@ -14,7 +14,7 @@ export const createRoutes = (store) => ({
   indexRoute: Home,
   childRoutes: [
     // List(store),
-    // Edit(store),
+    Edit(store),
     Page(store)
   ]
 })
