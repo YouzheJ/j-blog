@@ -61,6 +61,11 @@ class EditView extends React.Component {
   }
   onChange = (e) => {
     let value = e.target.value
+    console.log(value)
+    // 截取开头的标题，标签，目录等部分
+    const detailReg = /^---\ntitle:\s*(.*)\ntags:\n*(-\s.*)*\n/
+    let matchRes = value.match(detailReg)
+    console.log(matchRes)
     this.setState({viewContent: this.converter.makeHtml(value), mdText: value})
   }
   onKeyDown = (e) => {
