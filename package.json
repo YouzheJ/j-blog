@@ -139,6 +139,7 @@
     "redux-thunk": "^2.1.0",
     "rimraf": "^2.5.1",
     "sass-loader": "^4.0.0",
+    "showdown": "^1.8.6",
     "simple-universal-style-loader": "^0.14.3",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.14",

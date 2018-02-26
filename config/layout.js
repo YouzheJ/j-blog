@@ -12,6 +12,8 @@ export default Object.freeze({
     {rel: 'shortcut icon', href: '/favicon.ico'},
     {rel: 'stylesheet', href: '//at.alicdn.com/t/font_573398_hpkll2uh871ra4i.css'}
   ],
-  script: [],
+  script: [
+    {type: 'text/javascript', src: '/plugins/showdown/showdown.min.js'}
+  ],
   style: []
 })
