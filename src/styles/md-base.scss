@@ -4,6 +4,74 @@
   padding: 10px;
   font-size: 14px;
 
+  .base-info {
+    border-bottom: 1px solid #eee;
+    margin: 10px 0;
+    .page-title {
+      // padding-left: 10px;
+    }
+    .tag-list {
+      text-align: left;
+      line-height: 12px;
+      margin: 0;
+    }
+    .tag-item {
+      display: inline-block;
+      min-width: 30px;
+      max-width: 100px;
+      padding: 0 10px;
+      height: 14px;
+      line-height: 12px;
+      color: #fff;
+      background: #fc4;
+      font-size: 12px;
+      border-radius: 8px 0 1px 2px;
+      text-align: center;
+      position: relative;
+      margin: 10px 16px 0 0;
+      .text {
+        display: inline-block;
+        max-width: 80px;
+        // 文本过长显示省略号
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      &:before {
+        content: '';
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: #fff;
+        position: absolute;
+        top: 5px;
+        right: -4px;
+        z-index: 2;
+      }
+      &:after {
+        content: "";
+        display: block;
+        width: 0;
+        height: 0;
+        border: 7px solid transparent;
+        border-left: 10px solid #fc4;
+        position: absolute;
+        top: 0;
+        right: -17px;
+        z-index: 1;
+      }
+    }
+    .page-detail {
+      text-align: left;
+      padding: 10px 0;
+      font-size: 14px;
+      color: #aaa;
+      span {
+        padding-right: 30px;
+      }
+    }
+  }
+
   // 标题
   h1 {font-size: 36px;}
   h2 {font-size: 32px;}

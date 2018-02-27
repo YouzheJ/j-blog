@@ -2,7 +2,7 @@ import React from 'react'
 import Helmet from 'react-helmet'
 import './EditView.scss'
 import showdown from 'showdown'
-
+import { isArray } from '@youzhej/jutils/src'
 /*
 * 正则说明:
 * (?!\s\S---)[\s\S]*?
@@ -16,85 +16,71 @@ const FILTER_TAGS = /<script[\s\S]*?>[\s\S]*?<\/script>|<iframe[\s\S]*?>[\s\S]*?
 
 class EditView extends React.Component {
   converter = null
+  baseInfo = {
+    title: '标题',
+    tags: ['标签1（最多5个）', '标签2'],
+    categories: ['目录1（最多5个）', '目录2'],
+    matchRes: '---\ntitle: 标题\ntags:\n- 标签1（最多5个）\n- 标签2\ncategories:\n- 目录1（最多5个）\n- 目录2\n---'
+  }
   constructor (props) {
     super(props)
     this.state = {
-      viewContent: `
-      <h1 id="标题">标题</h1>
-      <h2 id="标题2">标题2</h2>
-      <h3 id="标题3">标题3</h3>
-      <h4 id="标题4">标题4</h4>
-      <h5 id="标题5">标题5</h5>
-      <h6 id="标题6">标题6</h6>
-      <ul>
-      <li>aa</li>
-      <li>bb</li>
-      </ul>
-      <hr>
-      <p><img src="https://img.alicdn.com/imgextra/i4/503912635/TB2m.FJoBTH8KJjy0FiXXcRsXXa_!!503912635.jpg" alt="baidu"><img src="http://aims.17zwd.com/nsys/42/a5dcb25b16870972d158e8615ae4863c.jpg" alt="baidu"></p>
-      <pre><code>function test () {
-       // todo
-      }</code></pre>
-      <table>
-      <thead>
-      <tr>
-      <th id="33">33</th>
-      <th id="33">33</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-      <td>33</td>
-      <td>33</td>
-      </tr>
-      <tr>
-      <td>33</td>
-      <td>33</td>
-      </tr>
-      <tr>
-      <td>33</td>
-      <td>33</td>
-      </tr>
-      </tbody>
-      </table>
-      <ol>
-      <li>aa</li>
-      <li>aa<ol>
-      <li>aa</li>
-      <li>aa<ol>
-      <li>aa</li>
-      <li>aa<ol>
-      <li>a</li>
-      <li>aa</li></ol></li></ol></li></ol></li>
-      </ol>`,
-      mdText: `---
-title: 标题
-tags:
-- 1
-- 2
-categories:
-- 3
-- 3
----
-title: hhh
-tags:
-- s
-categories:
-- g
----`
+      viewContent: '',
+      mdText: this.baseInfo.matchRes
     }
   }
   onChange = (e) => {
     let value = this.filterTags(e.target.value)
     // 截取开头的标题，标签，目录等部分
-    let baseInfo = this.getBaseInfo(value)
-    let viewContent = this.convertBaseInfo2Html(baseInfo) +
-                      this.converter.makeHtml(value.replace(baseInfo.matchStr, ''))
+    this.baseInfo = this.getBaseInfo(value)
+    let viewContent = this.convertBaseInfo2Html(this.baseInfo) +
+                      this.converter.makeHtml(value.replace(this.baseInfo.matchStr, ''))
     this.setState({viewContent, mdText: value})
   }
   convertBaseInfo2Html = (baseInfo) => {
-    let html = ''
-    return html
+    let html = `<div class='base-info'>`
+    if (baseInfo) {
+      const { title, tags, categories } = baseInfo
+      title && (html += `<h3 class='page-title'>${title}</h3>`)
+      if (tags && isArray(tags) && tags.length) {
+        html += `<ul class='tag-list'>`
+        tags.map((tag) => {
+          html += `<li class='tag-item'><span class='text' title=${tag}>${tag}</span></li>`
+        })
+        html += '</ul>'
+      }
+      html += `<div class='page-detail'>
+      <span>游者J</span>
+      <span>${this.formatDate()}</span>
+    </div>`
+    }
+    return html + '</div>'
+  }
+  formatDate = () => {
+    let date = new Date()
+    let y = date.getFullYear()
+    let m = date.getMonth() + 1
+    let d = date.getDate()
+    let h = date.getHours()
+    let min = date.getMinutes()
+    let s = date.getSeconds()
+    let day = date.getDay()
+    return `${y}-${this.addZero(m)}-${this.addZero(d)} ${this.addZero(h)}:${this.addZero(min)}:${this.addZero(s)} ${this.getDay(day)}`
+  }
+  getDay = (num) => {
+    switch (num) {
+      case 0: return '星期天'
+      case 1: return '星期一'
+      case 2: return '星期二'
+      case 3: return '星期三'
+      case 4: return '星期四'
+      case 5: return '星期五'
+      case 6: return '星期六'
+      default: return ''
+    }
+  }
+  addZero = (num, max = 10) => {
+    return num < 10 ? '0' + num : num
   }
   getBaseInfo = (str = '') => {
     let obj = {
@@ -115,11 +101,13 @@ categories:
   getBaseInfoPart = (str = '') => {
     let result = []
     let arr = str.split(/\n+/)
-    arr.map((item) => {
-      let res = item.replace(/[-\s]*/g, '')
-      res && result.push(res)
+    arr.map((item, index) => {
+      if (result.length < 5) { // 只取5个
+        let res = item.replace(/[-\s]*/g, '')
+        res && !~result.indexOf(res) && result.push(res)
+      }
     })
-    return result.filter((item, index, array) => array.indexOf(item) === index) // 去重
+    return result
   }
   // 过滤掉部分标签
   filterTags = (str = '') => {
@@ -144,6 +132,8 @@ categories:
     })
     this.converter.setFlavor('github')
     this.converter.setOption('simplifiedAutoLink', true)
+    let viewContent = this.convertBaseInfo2Html(this.baseInfo)
+    this.setState({viewContent})
   }
   render () {
     const { mdText, viewContent } = this.state

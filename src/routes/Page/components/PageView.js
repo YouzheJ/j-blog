@@ -11,7 +11,7 @@ export const PageView = () => (
         nav
       </div>
       <div className='page-center'>
-        <div className='page-title'>标题标题</div>
+        {/* <div className='page-title'>标题标题</div>
         <div className='page-tags'>
           <ul>
             <li className='tag-item'>tag</li>
@@ -23,7 +23,7 @@ export const PageView = () => (
           <span>游者J</span>
           <span>2018-02-26 11:22</span>
         </div>
-        <div className='page-content'>content</div>
+        <div className='page-content'>content</div> */}
       </div>
     </div>
   </div>
