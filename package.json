@@ -8,6 +8,7 @@
     "npm": "^3.0.0"
   },
   "scripts": {
+    "mock": "node mock",
     "clean": "rimraf dist",
     "compile": "better-npm-run compile",
     "lint": "eslint src tests server",
@@ -123,6 +124,7 @@
     "koa-connect-history-api-fallback": "^0.3.0",
     "koa-convert": "^1.2.0",
     "koa-proxy": "^0.6.0",
+    "koa-router": "^7.4.0",
     "koa-static": "^3.0.0",
     "node-sass": "^3.8.0",
     "normalize.css": "^4.2.0",
