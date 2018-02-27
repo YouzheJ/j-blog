@@ -1,7 +1,18 @@
 import React from 'react'
 import Helmet from 'react-helmet'
 import './EditView.scss'
-const showdown = window.showdown
+import showdown from 'showdown'
+
+/*
+* 正则说明:
+* (?!\s\S---)[\s\S]*?
+* 前面的 ?! 为零宽断言，这里表示匹配不包含 \s\S--- 的字符串
+* \s\S 表示匹配包含换行在内的所有字符
+* 后面的 [\s\S]*? 为惰性模式，即从前面开始匹配，匹配到即结束
+*/
+const BASEINFO_REG = /^---\n+title:\s+(.*)\n+tags:\n+((?!\s\S---)[\s\S]*?)categories:\n+((?!\s\S---)[\s\S]*?)---/
+// 过滤部分标签
+const FILTER_TAGS = /<script[\s\S]*?>[\s\S]*?<\/script>|<iframe[\s\S]*?>[\s\S]*?<\/iframe>/g
 
 class EditView extends React.Component {
   converter = null
@@ -56,17 +67,63 @@ class EditView extends React.Component {
       <li>a</li>
       <li>aa</li></ol></li></ol></li></ol></li>
       </ol>`,
-      mdText: ''
+      mdText: `---
+title: 标题
+tags:
+- 1
+- 2
+categories:
+- 3
+- 3
+---
+title: hhh
+tags:
+- s
+categories:
+- g
+---`
     }
   }
   onChange = (e) => {
-    let value = e.target.value
-    console.log(value)
+    let value = this.filterTags(e.target.value)
     // 截取开头的标题，标签，目录等部分
-    const detailReg = /^---\ntitle:\s*(.*)\ntags:\n*(-\s.*)*\n/
-    let matchRes = value.match(detailReg)
-    console.log(matchRes)
-    this.setState({viewContent: this.converter.makeHtml(value), mdText: value})
+    let baseInfo = this.getBaseInfo(value)
+    let viewContent = this.convertBaseInfo2Html(baseInfo) +
+                      this.converter.makeHtml(value.replace(baseInfo.matchStr, ''))
+    this.setState({viewContent, mdText: value})
+  }
+  convertBaseInfo2Html = (baseInfo) => {
+    let html = ''
+    return html
+  }
+  getBaseInfo = (str = '') => {
+    let obj = {
+      title: '',
+      tags: [],
+      categories: [],
+      matchStr: ''
+    }
+    let matchRes = str.match(BASEINFO_REG)
+    if (matchRes) {
+      obj.matchStr = matchRes[0]
+      obj.title = matchRes[1].trim()
+      obj.tags = this.getBaseInfoPart(matchRes[2])
+      obj.categories = this.getBaseInfoPart(matchRes[3])
+    }
+    return obj
+  }
+  getBaseInfoPart = (str = '') => {
+    let result = []
+    let arr = str.split(/\n+/)
+    arr.map((item) => {
+      let res = item.replace(/[-\s]*/g, '')
+      res && result.push(res)
+    })
+    return result.filter((item, index, array) => array.indexOf(item) === index) // 去重
+  }
+  // 过滤掉部分标签
+  filterTags = (str = '') => {
+    return str.replace(FILTER_TAGS, '')
   }
   onKeyDown = (e) => {
     let { value, selectionStart, selectionEnd } = e.target
