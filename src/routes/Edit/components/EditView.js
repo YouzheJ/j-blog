@@ -2,17 +2,12 @@ import React from 'react'
 import Helmet from 'react-helmet'
 import './EditView.scss'
 import showdown from 'showdown'
+import constant from '../../../constant'
 import { isArray } from '@youzhej/jutils/src'
-/*
-* 正则说明:
-* (?!\s\S---)[\s\S]*?
-* 前面的 ?! 为零宽断言，这里表示匹配不包含 \s\S--- 的字符串
-* \s\S 表示匹配包含换行在内的所有字符
-* 后面的 [\s\S]*? 为惰性模式，即从前面开始匹配，匹配到即结束
-*/
-const BASEINFO_REG = /^---\n+title:\s+(.*)\n+tags:\n+((?!\s\S---)[\s\S]*?)categories:\n+((?!\s\S---)[\s\S]*?)---/
-// 过滤部分标签
-const FILTER_TAGS = /<script[\s\S]*?>[\s\S]*?<\/script>|<iframe[\s\S]*?>[\s\S]*?<\/iframe>/g
+import { fetch2 } from '../../../utils'
+
+const { SAVE_DATA } = constant.api;
+const { BASEINFO_REG, FILTER_TAGS } = constant.reg;
 
 class EditView extends React.Component {
   converter = null
@@ -65,7 +60,8 @@ class EditView extends React.Component {
     let min = date.getMinutes()
     let s = date.getSeconds()
     let day = date.getDay()
-    return `${y}-${this.addZero(m)}-${this.addZero(d)} ${this.addZero(h)}:${this.addZero(min)}:${this.addZero(s)} ${this.getDay(day)}`
+    return `${y}-${this.addZero(m)}-${this.addZero(d)} ` + 
+    `${this.addZero(h)}:${this.addZero(min)}:${this.addZero(s)} ${this.getDay(day)}`;
   }
   getDay = (num) => {
     switch (num) {
@@ -122,6 +118,17 @@ class EditView extends React.Component {
       this.setState({mdText: value})
     }
   }
+  onSave = () => {
+    fetch2('mock/test', {
+      method: 'get'
+    })
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => {
+      console.log(err)
+    });
+  }
   componentWillMount () {
     this.converter = new showdown.Converter({
       simplifiedAutoLink: true,
@@ -153,7 +160,7 @@ class EditView extends React.Component {
         </div>
         <div className='view-wrapper'>
           <div className='view-content'>
-            <p className='view-title'>预览</p>
+            <p className='view-title'>预览<span className='btn save-btn' onClick={this.onSave}>保存</span></p>
             <div className='md-wrapper'>
               {
                 <div

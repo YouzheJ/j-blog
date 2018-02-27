@@ -2,12 +2,14 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const app = new Koa();
 const router = new Router();
+const constant = require('../src/constant');
+const { SAVE_DATA } = constant.api;
 
-router.post('/api/pageadd', (ctx, next) => {
+router.post(SAVE_DATA, (ctx, next) => {
 
 });
 
-router.get('/test', (ctx, next) => {
+router.get('/mock/test', (ctx, next) => {
   ctx.body = {
     is_success: true,
     code: '200',
