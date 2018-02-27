@@ -73,6 +73,9 @@ ul, li, p {
 body * ::-webkit-scrollbar {
   width: 4px;
   overflow: hidden;
+  &:horizontal {
+    height: 4px;
+  }
 }
 body * ::-webkit-scrollbar-button {
   display: none;

@@ -2,11 +2,14 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const app = new Koa();
 const router = new Router();
-const constant = require('../src/constant');
-const { SAVE_DATA } = constant.api;
 
-router.post(SAVE_DATA, (ctx, next) => {
-
+router.post('/mock/datasave', (ctx, next) => {
+  ctx.body = {
+    is_success: true,
+    code: '200',
+    msg: '保存成功',
+    result: '1234567890'
+  }
 });
 
 router.get('/mock/test', (ctx, next) => {

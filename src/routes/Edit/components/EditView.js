@@ -119,8 +119,19 @@ class EditView extends React.Component {
     }
   }
   onSave = () => {
-    fetch2('mock/test', {
-      method: 'get'
+    const { title, tags, categories, matchRes } = this.baseInfo;
+    const { mdText } = this.state;
+    fetch2(SAVE_DATA, {
+      method: 'post',
+      data: JSON.stringify({
+        title,
+        tags,
+        categories,
+        author: '游者J',
+        useId: 521,
+        baseInfo: matchRes,
+        markdown: mdText
+      })
     })
     .then(res => {
       console.log(res)

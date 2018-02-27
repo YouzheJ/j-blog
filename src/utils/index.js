@@ -14,7 +14,8 @@ export const fetch2 = (url, config) => {
           return res.json();
         } else {
           reject({
-            message: 'fetch error'
+            message: 'fetch error',
+            code: res.status
           });
         }
       })
