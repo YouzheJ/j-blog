@@ -13,14 +13,14 @@ const reg = {
 
 const development = {
   api: {
-    SAVE_DATA: 'mock/datasave'
+    SAVE_DATA: '/api/page/add'
   },
   reg,
 }
 
 const production = {
   api: {
-    SAVE_DATA: 'api/datasave'
+    SAVE_DATA: '/api/page/add'
   },
   reg,
 }

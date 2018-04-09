@@ -124,13 +124,12 @@ class EditView extends React.Component {
     fetch2(SAVE_DATA, {
       method: 'post',
       data: JSON.stringify({
+        author: '游者J',
         title,
         tags,
         categories,
-        author: '游者J',
-        useId: 521,
-        baseInfo: matchRes,
-        markdown: mdText
+        baseMd: matchRes,
+        detailMd: mdText
       })
     })
     .then(res => {

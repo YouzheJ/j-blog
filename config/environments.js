@@ -13,8 +13,8 @@ export default {
     proxy: {
       enabled: true,
       options: {
-        host: 'http://localhost:4000',
-        match: /^\/mock\/.*/
+        host: 'http://localhost:8000',
+        match: /^\/api\/.*/
       }
     }
   }),
