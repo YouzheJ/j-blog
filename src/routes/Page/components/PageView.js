@@ -6,10 +6,8 @@ export const PageView = () => (
   <div>
     <Helmet title='Page' />
     <div className='page-wrapper'>
-      <div className='page-list'>list</div>
-      <div className='page-nav'>
-        nav
-      </div>
+      {/* <div className='page-list'>list</div>
+      <div className='page-nav'>nav</div> */}
       <div className='page-center'>
         {/* <div className='page-title'>标题标题</div>
         <div className='page-tags'>
