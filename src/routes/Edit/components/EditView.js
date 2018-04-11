@@ -5,6 +5,7 @@ import showdown from 'showdown'
 import constant from '../../../constant'
 import { isArray } from '@youzhej/jutils/src'
 import { fetch2 } from '../../../utils'
+import LoginModal from '../../../components/Modal/login'
 
 const { SAVE_DATA } = constant.api;
 const { BASEINFO_REG, FILTER_TAGS } = constant.reg;

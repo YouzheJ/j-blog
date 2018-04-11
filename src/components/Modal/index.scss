@@ -1,0 +1,44 @@
+@mixin transform ($param) {
+    transform: $param;
+    -ms-transform: $param; 	/* IE 9 */
+    -moz-transform: $param; 	/* Firefox */
+    -webkit-transform: $param; /* Safari 和 Chrome */
+    -o-transform: $param; 	/* Opera */
+}
+
+@mixin translate ($top: -50%, $left: -50%) {
+    @include transform(translate($top, $left));
+}
+
+.Modal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 900;
+    // 遮罩
+    .ModalMask {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: 990;
+        background: rgba(55,55,55, 0.5);
+    }
+    // 弹框公用样式
+    .ModalContainer {
+        background: #fff;
+        width: 500px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        @include translate(-50%, -50%);
+        z-index: 1000;
+    }
+    // 登陆框
+    .LoginContainer {
+        width: 300px;
+        min-height: 200px;
+        border-radius: 5px;
+        box-shadow: 0 0 3px 3px #ccc;
+    }
+}
+
