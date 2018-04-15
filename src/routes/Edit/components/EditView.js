@@ -7,7 +7,7 @@ import { isArray } from '@youzhej/jutils/src'
 import { fetch2 } from '../../../utils'
 import LoginModal from '../../../components/Modal/login'
 
-const { SAVE_DATA } = constant.api;
+const { SAVE_DATA, CHECK_LOGIN } = constant.api;
 const { BASEINFO_REG, FILTER_TAGS } = constant.reg;
 
 class EditView extends React.Component {
@@ -135,10 +135,32 @@ class EditView extends React.Component {
     })
     .then(res => {
       console.log(res)
+      if (res && res.success) {
+
+      } else {
+
+      }
     })
     .catch(err => {
       console.log(err)
     });
+  }
+  checkLogin = () => {
+    fetch2(CHECK_LOGIN, {
+      method: 'get'
+    })
+      .then((res) => {
+        console.log(res);
+        if (res & res.success) {
+
+        } else {
+          LoginModal.open();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        LoginModal.open();
+      });
   }
   componentWillMount () {
     this.converter = new showdown.Converter({
@@ -151,7 +173,8 @@ class EditView extends React.Component {
     this.converter.setFlavor('github')
     this.converter.setOption('simplifiedAutoLink', true)
     let viewContent = this.convertBaseInfo2Html(this.baseInfo)
-    this.setState({viewContent})
+    this.setState({viewContent});
+    this.checkLogin();
   }
   render () {
     const { mdText, viewContent } = this.state

@@ -13,14 +13,18 @@ const reg = {
 
 const development = {
   api: {
-    SAVE_DATA: '/api/page/add'
+    SAVE_DATA: '/api/page/add',
+    CHECK_LOGIN: '/api/user/login/check',
+    LOGIN_POST: '/api/user/login',
   },
   reg,
 }
 
 const production = {
   api: {
-    SAVE_DATA: '/api/page/add'
+    SAVE_DATA: '/api/page/add',
+    CHECK_LOGIN: '/api/user/login/check',
+    LOGIN_POST: '/api/user/login',
   },
   reg,
 }
