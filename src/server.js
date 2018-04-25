@@ -20,7 +20,7 @@ const debug = _debug('app:server:universal:render')
 export default getClientInfo => {
   return async function (ctx, next) {
     const initialState = await router(ctx)
-
+console.log('server state: ', initialState)
     const memoryHistory = createMemoryHistory(ctx.req.url)
 
 

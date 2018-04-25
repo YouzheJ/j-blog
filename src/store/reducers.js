@@ -4,8 +4,9 @@ import { routerReducer as router } from 'react-router-redux'
 // Fix: "React-Redux: Combining reducers: Unexpected Keys"
 // http://stackoverflow.com/a/33678198/789076
 const initialReducers = {
-  counter: (state = 0) => state,
-  zen: (state = require('../routes/Zen/modules/zen').initialState) => state
+  counter: (state = 233) => state,
+  page: (state = require('../routes/Page/modules/page').initialState) => state,
+  zen: (state = require('../routes/Zen/modules/zen').initialState) => state,
 }
 
 export const makeRootReducer = (asyncReducers) => {

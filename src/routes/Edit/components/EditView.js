@@ -120,7 +120,7 @@ class EditView extends React.Component {
     }
   }
   onSave = () => {
-    const { title, tags, categories, matchRes } = this.baseInfo;
+    const { title, tags, categories, matchRes, matchStr } = this.baseInfo;
     const { mdText } = this.state;
     fetch2(SAVE_DATA, {
       method: 'post',
@@ -129,8 +129,8 @@ class EditView extends React.Component {
         title,
         tags,
         categories,
-        baseMd: matchRes,
-        detailMd: mdText
+        baseMD: matchStr,
+        detailMD: mdText.replace(matchStr, ''),
       })
     })
     .then(res => {
@@ -150,8 +150,7 @@ class EditView extends React.Component {
       method: 'get'
     })
       .then((res) => {
-        console.log(res);
-        if (res & res.success) {
+        if (res && res.success) {
 
         } else {
           LoginModal.open();

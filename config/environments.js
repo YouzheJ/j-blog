@@ -13,8 +13,8 @@ export default {
     proxy: {
       enabled: true,
       options: {
-        host: 'http://blog.youzhej.cn',
-        // host: 'http://localhost:8000',
+        // host: 'http://blog.youzhej.cn',
+        host: 'http://localhost:8000',
         match: /^\/api\/.*/
       }
     }

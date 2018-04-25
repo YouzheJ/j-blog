@@ -18,7 +18,6 @@ export default class Zen extends Component {
   render () {
     const { fetchZen, clearZen, zen } = this.props
     const { fetching, text } = zen
-    console.log(this.props)
 
     return (
       <div>
