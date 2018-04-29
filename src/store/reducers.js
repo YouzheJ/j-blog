@@ -6,6 +6,7 @@ import { routerReducer as router } from 'react-router-redux'
 const initialReducers = {
   counter: (state = 233) => state,
   page: (state = require('../routes/Page/modules/page').initialState) => state,
+  edit: (state = require('../routes/Edit/modules/edit').initialState) => state,
   zen: (state = require('../routes/Zen/modules/zen').initialState) => state,
 }
 

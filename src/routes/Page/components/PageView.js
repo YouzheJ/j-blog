@@ -11,14 +11,14 @@ export const PageView = (data) => {
   return (
     <div>
       <Helmet title='Page' />
-      <div className='page-wrapper'>
+      <div className='page-wrapper md-base'>
         {/* <div className='page-list'>list</div>
         <div className='page-nav'>nav</div> */}
-        <div className='page-center'>
-          <div className='page-title'>{title}</div>
+        <div className='page-center base-info'>
+          <h3 className='page-title'>{title}</h3>
           <div className='page-tags'>
             <ul>
-              {tags.split(',').map((tag, key) => <li key={key} className='tag-item'>{tag}</li>)}
+              {tags.split(',').map((tag, key) => <li key={key} className='tag-item'><span className="text" title={tag}>{tag}</span></li>)}
             </ul>
           </div>
           <div className='page-detail'>
