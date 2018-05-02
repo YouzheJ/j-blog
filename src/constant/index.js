@@ -11,11 +11,17 @@ const reg = {
     FILTER_TAGS: /<script[\s\S]*?>[\s\S]*?<\/script>|<iframe[\s\S]*?>[\s\S]*?<\/iframe>/g
 }
 
+const test_host = 'http://test.youzhej.cn:8000';
+
 const development = {
   api: {
     SAVE_DATA: '/api/page/add',
     CHECK_LOGIN: '/api/user/login/check',
     LOGIN_POST: '/api/user/login',
+    PAGE_GET: '/api/page/html/get',
+    PAGE_GET_SERVER: test_host + '/api/page/html/get',
+    LIST_GET: '/api/page/get/list',
+    LIST_GET_SERVER: test_host + '/api/page/get/list',
   },
   reg,
 }
@@ -25,6 +31,8 @@ const production = {
     SAVE_DATA: '/api/page/add',
     CHECK_LOGIN: '/api/user/login/check',
     LOGIN_POST: '/api/user/login',
+    PAGE_GET: '/api/page/html/get',
+    LIST_GET: '/api/page/get/list',
   },
   reg,
 }

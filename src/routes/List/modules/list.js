@@ -46,7 +46,7 @@ const ACTION_HANDLERS = {
 // ------------------------------------
 // Reducer
 // ------------------------------------
-export const initialState = 0
+export const initialState = {}
 export default function (state = initialState, action) {
   const handler = ACTION_HANDLERS[action.type]
 

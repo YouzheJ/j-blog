@@ -1,9 +1,11 @@
 import React from 'react'
 import Helmet from 'react-helmet'
+import { Link } from 'react-router'
 import './ListView.scss'
 
-export const ListView = () => (
-  <div>
+export const ListView = (props) => {
+  const { total, list } = props.list;
+  return <div>
     <Helmet title='List' />
     <div className='list-wrapper'>
       <div className='list-header'>
@@ -14,32 +16,38 @@ export const ListView = () => (
       <div className='list-content'>
         <div className='page-list-wrapper'>
           <ul className='page-list'>
-            <li className='list-item'>
-              <div className='item-content'>
-                <div className='title'>标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题</div>
-                <div className='btn-group'>
-                  <span className='item-btn edit-btn'>
-                    <i className='iconfont icon-edit'></i>
-                  </span>
-                  <span className='item-btn del-btn'>
-                    <i className='iconfont icon-delete'></i>
-                  </span>
-                </div>
-                <div className='item-bottom'>
-                  <div className='bottom-left'>
-                    <div className='tags'>tag: <span>test2</span></div>
-                  </div>
-                  <div className='bottom-right'>
-                    <span>2018-05-01 12:00</span>
-                  </div>
-                </div>
-              </div>
-            </li>
+          {
+            list && list.length && list.map(createList)
+          }
           </ul>
         </div>
       </div>
     </div>
   </div>
+}
+
+const createList = (item) => (
+  <li className='list-item' key={item.id}>
+    <div className='item-content'>
+      <div className='title'><Link to={`/page?id=${item.id}`}>{item.title}</Link></div>
+      <div className='btn-group'>
+        <span className='item-btn edit-btn'>
+          <i className='iconfont icon-edit'></i>
+        </span>
+        <span className='item-btn del-btn'>
+          <i className='iconfont icon-delete'></i>
+        </span>
+      </div>
+      <div className='item-bottom'>
+        <div className='bottom-left'>
+          <div className='tags'>tag: <span>{item.tags}</span></div>
+        </div>
+        <div className='bottom-right'>
+          <span>{item.created}</span>
+        </div>
+      </div>
+    </div>
+  </li>
 )
 
 export default ListView
