@@ -22,6 +22,7 @@ const development = {
     PAGE_GET_SERVER: test_host + '/api/page/html/get',
     LIST_GET: '/api/page/get/list',
     LIST_GET_SERVER: test_host + '/api/page/get/list',
+    DELETE_PAGE: '/api/page/delete',
   },
   reg,
 }
@@ -33,6 +34,7 @@ const production = {
     LOGIN_POST: '/api/user/login',
     PAGE_GET: '/api/page/html/get',
     LIST_GET: '/api/page/get/list',
+    DELETE_PAGE: '/api/page/delete',
   },
   reg,
 }
