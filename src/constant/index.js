@@ -16,6 +16,7 @@ const test_host = 'http://test.youzhej.cn:8000';
 const development = {
   api: {
     SAVE_DATA: '/api/page/add',
+    UPDATE_DATA: '/api/page/edit',
     CHECK_LOGIN: '/api/user/login/check',
     LOGIN_POST: '/api/user/login',
     PAGE_GET: '/api/page/html/get',
@@ -30,6 +31,7 @@ const development = {
 const production = {
   api: {
     SAVE_DATA: '/api/page/add',
+    UPDATE_DATA: '/api/page/edit',
     CHECK_LOGIN: '/api/user/login/check',
     LOGIN_POST: '/api/user/login',
     PAGE_GET: '/api/page/html/get',

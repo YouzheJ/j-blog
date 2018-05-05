@@ -6,32 +6,35 @@ import constant from '../../constant'
 const { LOGIN_POST } = constant.api;
 
 export default class Login extends React.Component {
-  static open () {
+  static open (cb) {
     this.instance.setState({
       visible: true,
+      cb,
     });
   }
   constructor(props) {
       super(props);
       this.state = {
         visible: false,
+        cb: null,
       }
   }
   close = () => {
     this.setState({
       visible: false,
+      cb: null,
     });
   }
   componentDidMount() {
 
   }
   render() {
-    const { visible } = this.state;
+    const { visible, cb } = this.state;
     return (
       <div className='Modal' style={{display: visible ? 'block' : 'none'}}>
         <div className='ModalMask'></div>
           <div className='ModalContainer LoginContainer'>
-            <LoginContent closeModal={this.close}/>
+            <LoginContent closeModal={this.close} succCb={cb}/>
           </div>
       </div>
         )
@@ -47,23 +50,26 @@ class LoginContent extends React.Component {
       }
   }
   login = (userName, password) => {
-    fetch2(LOGIN_POST, {
-      method: 'post',
-      data: JSON.stringify({
-        userName,
-        password,
-      }),
-    })
-    .then((res) => {
-      console.log(res);
-      if (res && res.success) {
-        this.props.closeModal();
-      } else {
-
-      }
-    })
-    .catch((err) => {
-      console.log(err);
+    return new Promise((resolve, reject) => {
+      fetch2(LOGIN_POST, {
+        method: 'post',
+        data: JSON.stringify({
+          userName,
+          password,
+        }),
+      })
+      .then((res) => {
+        if (res && res.success) {
+          this.props.succCb && this.props.succCb();
+          this.props.closeModal();
+        } else {
+          alert(res.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(err.message);
+      });
     });
   }
   onChange = (type) => (e) => {
@@ -80,7 +86,7 @@ class LoginContent extends React.Component {
       <div className='loginWrapper'>
         <div className='header'>
           <span className='titleText'>登陆</span>
-          <span className='closeBtn'>x</span>
+          <span className='closeBtn' onClick={this.props.closeModal}>x</span>
         </div>
         <div className='content'>
           <div className='contentItem'>
@@ -104,7 +110,7 @@ class LoginContent extends React.Component {
         </div>
         <div className='footer'>
           <button className='btn loginBtn' onClick={this.onLogin}>登陆</button>
-          <button className='btn cancelBtn'>取消</button>
+          <button className='btn cancelBtn' onClick={this.props.closeModal}>取消</button>
         </div>
       </div>
     )

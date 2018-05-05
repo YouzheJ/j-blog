@@ -7,7 +7,7 @@ import { isArray } from '@youzhej/jutils/src'
 import { fetch2 } from '../../../utils'
 import LoginModal from '../../../components/Modal/login'
 
-const { SAVE_DATA, CHECK_LOGIN } = constant.api;
+const { SAVE_DATA, PAGE_GET, CHECK_LOGIN, UPDATE_DATA } = constant.api;
 const { BASEINFO_REG, FILTER_TAGS } = constant.reg;
 
 class EditView extends React.Component {
@@ -16,22 +16,19 @@ class EditView extends React.Component {
     title: '标题',
     tags: ['标签1（最多5个）', '标签2'],
     categories: ['目录1（最多5个）', '目录2'],
-    matchRes: '---\ntitle: 标题\ntags:\n- 标签1（最多5个）\n- 标签2\ncategories:\n- 目录1（最多5个）\n- 目录2\n---'
+    matchStr: '---\ntitle: 标题\ntags:\n- 标签1（最多5个）\n- 标签2\ncategories:\n- 目录1（最多5个）\n- 目录2\n---', // 基础信息的md
   }
   constructor (props) {
     super(props)
     this.state = {
       viewContent: '',
-      mdText: this.baseInfo.matchRes
+      page_id: '',
+      mdText: this.baseInfo.matchStr
     }
   }
   onChange = (e) => {
     let value = this.filterTags(e.target.value)
-    // 截取开头的标题，标签，目录等部分
-    this.baseInfo = this.getBaseInfo(value)
-    let viewContent = this.convertBaseInfo2Html(this.baseInfo) +
-                      this.converter.makeHtml(value.replace(this.baseInfo.matchStr, ''))
-    this.setState({viewContent, mdText: value})
+    this.setViewContent(value);
   }
   convertBaseInfo2Html = (baseInfo) => {
     let html = `<div class='base-info'>`
@@ -120,48 +117,89 @@ class EditView extends React.Component {
     }
   }
   onSave = () => {
-    const { title, tags, categories, matchRes, matchStr } = this.baseInfo;
-    const { mdText } = this.state;
-    fetch2(SAVE_DATA, {
+    const { title, tags, categories, matchStr } = this.baseInfo;
+    const { mdText, page_id } = this.state;
+    let url = SAVE_DATA;
+    let data = {
+      author: '游者J',
+      title,
+      tags,
+      categories,
+      baseMD: matchStr,
+      detailMD: mdText.replace(matchStr, ''),
+    };
+    if (page_id) {
+      url = UPDATE_DATA;
+      data.page_id = page_id;
+    }
+    fetch2(url, {
       method: 'post',
-      data: JSON.stringify({
-        author: '游者J',
-        title,
-        tags,
-        categories,
-        baseMD: matchStr,
-        detailMD: mdText.replace(matchStr, ''),
-      })
+      data: JSON.stringify(data)
     })
     .then(res => {
-      console.log(res)
-      if (res && res.success) {
-
+      if (res && res.success && res.data) {
+        this.props.history.push(`/page?id=${page_id || res.data}`);
+      } else if (res && res.code === 401) {
+        LoginModal.open(this.onSave);
       } else {
-
+        alert(res && res.message || '保存失败，请稍后重试');
       }
     })
     .catch(err => {
       console.log(err)
+      alert(err.message);
     });
   }
-  checkLogin = () => {
-    fetch2(CHECK_LOGIN, {
-      method: 'get'
-    })
-      .then((res) => {
-        if (res && res.success) {
-
-        } else {
-          LoginModal.open();
-        }
+  checkLogin = (cb) => {
+    return new Promise((resolve, reject) => {
+      fetch2(CHECK_LOGIN, {
+        method: 'get'
       })
-      .catch((err) => {
-        console.log(err);
-        LoginModal.open();
-      });
+        .then((res) => {
+          if (res && res.success) {
+            resolve();
+          } else {
+            LoginModal.open(cb);
+            reject();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          LoginModal.open(cb);
+          reject();
+        });
+    });
+  }
+  getEditData = (pageId) => {
+    return new Promise((resolve, reject) => {
+      fetch2(`${PAGE_GET}?pageid=${pageId}`, {
+        method: 'get'
+      })
+        .then((res) => {
+          if (res && res.success && res.data) {
+            this.setState({page_id: pageId});
+            this.setViewContent(res.data.base_md + res.data.detail_md);
+          } else if (res && res.code === 401) {
+            LoginModal.open(this.getEditData);
+          } else {
+            alert(res && res.message || '获取数据失败');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(err.message);
+        });
+    });
+  }
+  setViewContent = (value) => {
+    // 截取开头的标题，标签，目录等部分
+    this.baseInfo = this.getBaseInfo(value)
+    let viewContent = this.convertBaseInfo2Html(this.baseInfo) +
+                      this.converter.makeHtml(value.replace(this.baseInfo.matchStr, ''))
+    this.setState({viewContent, mdText: value})
   }
   componentWillMount () {
+    // 初始化showdown
     this.converter = new showdown.Converter({
       simplifiedAutoLink: true,
       excludeTrailingPunctuationFromURLs: true,
@@ -171,9 +209,13 @@ class EditView extends React.Component {
     })
     this.converter.setFlavor('github')
     this.converter.setOption('simplifiedAutoLink', true)
-    let viewContent = this.convertBaseInfo2Html(this.baseInfo)
+    // 
+    const { location } = this.props;
+    const pageId = Number(location.query.id);
+    let viewContent = this.convertBaseInfo2Html(this.baseInfo);
     this.setState({viewContent});
-    this.checkLogin();
+    const checkCb = () => !isNaN(pageId) && this.getEditData(pageId);
+    this.checkLogin(checkCb).then(checkCb);
   }
   render () {
     const { mdText, viewContent } = this.state
