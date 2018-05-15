@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import './Header.scss'
+// 生产环境下，需要将头部的样式放到 core.scss 中才起效
 
 export const Header = () => (
   <div className='header clearfix'>
