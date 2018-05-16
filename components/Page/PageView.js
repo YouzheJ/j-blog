@@ -34,9 +34,10 @@ class PageView extends React.Component {
     this.setState({page: data});
   }
   componentDidMount () {
-    const { page, query } = this.props;
-    const pageId = Number(query.id);
-    !page && !isNaN(pageId) && this.getPageData(pageId).then((res) => this.updatePage(res));
+    // 服务端获取
+    // const { page, query } = this.props;
+    // const pageId = Number(query.id);
+    // !page && !isNaN(pageId) && this.getPageData(pageId).then((res) => this.updatePage(res));
   }
   render () {
     const { page } = this.state;

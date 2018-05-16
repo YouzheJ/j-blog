@@ -84,10 +84,11 @@ class ListView extends React.Component {
     this.setState({...data});
   }
   componentDidMount () {
-    const {query } = this.props;
-    let index = Number(query.index);
-    isNaN(index) && (index = 0);
-    this.getListData(index).then((res) => this.updateList(res));
+    // 改为服务端获取
+    // const { query } = this.props;
+    // let index = Number(query.index);
+    // isNaN(index) && (index = 0);
+    // this.getListData(index).then((res) => this.updateList(res));
   }
   render () {
     const { total, list } = this.state;

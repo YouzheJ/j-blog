@@ -214,6 +214,7 @@ class EditView extends React.Component {
     const pageId = Number(query.id);
     let viewContent = this.convertBaseInfo2Html(this.baseInfo);
     this.setState({viewContent});
+    // 只在客户端获取
     const checkCb = () => !isNaN(pageId) && this.getEditData(pageId);
     this.checkLogin(checkCb).then(checkCb);
   }
