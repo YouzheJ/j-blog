@@ -13,7 +13,7 @@ const reg = {
     FILTER_TAGS: /<script[\s\S]*?>[\s\S]*?<\/script>|<iframe[\s\S]*?>[\s\S]*?<\/iframe>/g
 }
 
-const server_host = NODE_ENV === 'production' ? 'http://127.0.0.1' : 'http://blog.youzhej.cn';
+const server_host = NODE_ENV === 'production' ? 'http://blog.youzhej.cn' : 'http://blog.youzhej.cn';
 
 const development = {
   api: {
