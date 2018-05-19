@@ -2,6 +2,7 @@ import React from 'react'
 import './index.scss'
 import { fetch2 } from '../../utils'
 import constant from '../../constant'
+import md5 from 'md5'
 
 const { LOGIN_POST } = constant.api;
 
@@ -55,7 +56,7 @@ class LoginContent extends React.Component {
         method: 'post',
         data: JSON.stringify({
           userName,
-          password,
+          password: md5(password),
         }),
       })
       .then((res) => {
