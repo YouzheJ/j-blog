@@ -4,6 +4,7 @@ const next = require('next')
 const devProxy = {
   '/api': {
     target: 'https://blog.youzhej.cn/',
+    // target: 'http://localhost:8000/',
     // pathRewrite: {'^/api': '/'},
     changeOrigin: true
   }
