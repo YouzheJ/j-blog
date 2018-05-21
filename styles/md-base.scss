@@ -2,7 +2,7 @@
 .md-base {
   text-align: left;
   padding: 10px;
-  font-size: 14px;
+  font-size: 18px;
 
   .base-info {
     border-bottom: 1px solid #eee;
@@ -88,6 +88,12 @@
     }
   }
 
+  // 段落
+  p {
+    padding: 10px;
+    line-height: 28px;
+  }
+
   // 图片
   img {
     max-width: 100%;
@@ -108,17 +114,23 @@
     margin: 10px;
     box-shadow: 2px 2px 3px 1px #cfcfcf;
     overflow: auto;
+    transition: all 0.3s ease;
+    &:hover {
+      font-weight: bold;
+      box-shadow: 10px 10px 10px 3px #cfcfcf;
+    }
   }
 
   code {
     color: #333;
-    font-size: 14px;
+    font-size: 16px;
   }
 
   // 引用
   blockquote {
     border-left: 3px solid #e3e3e3;
-    padding-left: 10px;
+    // padding-left: 10px;
+    margin: 10px;
   }
 
   // 表格
