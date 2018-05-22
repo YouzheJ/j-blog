@@ -9,9 +9,12 @@ import LoginModal from '../Modal/login'
 
 const { SAVE_DATA, PAGE_GET, CHECK_LOGIN, UPDATE_DATA } = constant.api;
 const { BASEINFO_REG, FILTER_TAGS } = constant.reg;
+const JBLOG_LOCAL_SAVE = 'JBLOG_LOCAL_SAVE';
+const default_save_text = '每 1 分钟自动保存';
 
 class EditView extends React.Component {
   converter = null
+  localSaveTimer = null
   baseInfo = {
     title: '标题',
     tags: ['标签1（最多5个）', '标签2'],
@@ -23,12 +26,22 @@ class EditView extends React.Component {
     this.state = {
       viewContent: '',
       page_id: '',
-      mdText: this.baseInfo.matchStr
+      mdText: this.baseInfo.matchStr,
+      hasEdit: false,
+      localSaveText: '',
     }
   }
   onChange = (e) => {
+    if (!this.state.hasEdit) {
+      this.setState({hasEdit: true, localSaveText: default_save_text }, this.autoLocalSave);
+    }
     let value = this.filterTags(e.target.value)
     this.setViewContent(value);
+  }
+  autoLocalSave = () => {
+    this.localSaveTimer = setInterval(() => {
+      this.onLocalSave();
+    }, 1000);
   }
   convertBaseInfo2Html = (baseInfo) => {
     let html = `<div class='base-info'>`
@@ -108,12 +121,28 @@ class EditView extends React.Component {
     return str.replace(FILTER_TAGS, '')
   }
   onKeyDown = (e) => {
+    // 修复tab键不能正常使用的bug
     let { value, selectionStart, selectionEnd } = e.target
     if (e.keyCode === 9 || e.which === 9) {
       e.preventDefault()
       value = value.substring(0, selectionStart) + '\t' + value.substring(selectionEnd)
       e.target.selectionEnd = selectionStart + 1
       this.setState({mdText: value})
+    }
+  }
+  onLocalSave = () => {
+    if (this.state.hasEdit) {
+      const date = this.formatDate();
+      const data = JSON.stringify({
+        baseInfo: this.baseInfo,
+        mdText: this.state.mdText,
+        page_id: this.page_id,
+        created: date,
+      });
+      localStorage.setItem(JBLOG_LOCAL_SAVE, data);
+      this.setState({localSaveText: `存于：${date}`});
+    } else {
+      alert('请先编辑文章');
     }
   }
   onSave = () => {
@@ -139,6 +168,7 @@ class EditView extends React.Component {
     .then(res => {
       if (res && res.success && res.data) {
         Router.push(`/page?id=${page_id || res.data}`);
+        localStorage.removeItem(JBLOG_LOCAL_SAVE);
       } else if (res && res.code === 401) {
         LoginModal.open(this.onSave);
       } else {
@@ -191,12 +221,41 @@ class EditView extends React.Component {
         });
     });
   }
+  localDataLoad = () => {
+    let data = localStorage.getItem(JBLOG_LOCAL_SAVE);
+    if (confirm('检测到有上次未完成的数据，是否应用')) {
+      try {
+        data = JSON.parse(data);
+        this.baseInfo = data.baseInfo;
+        this.setState({
+          mdText: data.mdText,
+          page_id: data.page_id,
+          localSaveText: created,
+        });
+        return true;
+      } catch (err) {
+        alert('数据已损坏，将自动删除');
+        this.clearLocalSaveTimer();
+        localStorage.removeItem(JBLOG_LOCAL_SAVE);
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
   setViewContent = (value) => {
     // 截取开头的标题，标签，目录等部分
     this.baseInfo = this.getBaseInfo(value)
     let viewContent = this.convertBaseInfo2Html(this.baseInfo) +
                       this.converter.makeHtml(value.replace(this.baseInfo.matchStr, ''))
     this.setState({viewContent, mdText: value})
+  }
+  clearLocalSaveTimer = () => {
+    clearInterval(this.localSaveTimer);
+    this.localSaveTimer = null;
+  }
+  componentWillUnmount () {
+    this.clearLocalSaveTimer();
   }
   componentWillMount () {
     // 初始化showdown
@@ -209,17 +268,17 @@ class EditView extends React.Component {
     })
     this.converter.setFlavor('github')
     this.converter.setOption('simplifiedAutoLink', true)
-    // 
+    //
     const { query } = this.props;
     const pageId = Number(query.id);
     let viewContent = this.convertBaseInfo2Html(this.baseInfo);
     this.setState({viewContent});
     // 只在客户端获取
-    const checkCb = () => !isNaN(pageId) && this.getEditData(pageId);
+    const checkCb = () => !this.localDataLoad() && !isNaN(pageId) && this.getEditData(pageId);
     this.checkLogin(checkCb).then(checkCb);
   }
   render () {
-    const { mdText, viewContent } = this.state
+    const { mdText, viewContent, localSaveText, hasEdit } = this.state
     return (
       <div className='edit-page clearfix'>
         <LoginModal ref={(component) => LoginModal.instance = component}/>
@@ -236,7 +295,14 @@ class EditView extends React.Component {
         </div>
         <div className='view-wrapper'>
           <div className='view-content'>
-            <p className='view-title'>预览<span className='btn save-btn' onClick={this.onSave}>保存</span></p>
+            <p className='view-title'>
+              预览
+              <span className='btn-group'>
+                <span className='local-save-text'>{localSaveText}</span>
+                <span className='btn local-save-btn' onClick={this.onLocalSave}>本地保存</span>
+                <span className='btn save-btn' onClick={this.onSave}>保存</span>
+              </span>
+            </p>
             <div className='md-wrapper'>
               {
                 <div

@@ -44,10 +44,26 @@
     overflow: auto;
     padding-top: 40px;
   }
-  .save-btn {
+  .btn-group {
     float: right;
     position: relative;
     top: -5px;
     right: -10px;
+  }
+
+  .local-save-text {
+    padding: 0 10px;
+    color: #999;
+    font-size: 12px;
+  }
+
+  .local-save-btn {
+    margin-right: 10px;
+    background: #fff;
+    border: 1px solid #23D18B;
+    color: #23D18B;
+    &:hover {
+      background: #fff;
+    }
   }
 }
