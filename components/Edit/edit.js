@@ -29,6 +29,7 @@ class EditView extends React.Component {
       page_id: '',
       mdText: this.baseInfo.matchStr,
       hasEdit: false,
+      showLocalData: false,
       localSaveText: '',
     }
   }
@@ -41,6 +42,13 @@ class EditView extends React.Component {
   }
   autoLocalSave = () => {
     this.localSaveTimer = setInterval(() => {
+      if (this.state.showLocalData) {
+        if (!confirm('本地自动保存：未保存的旧数据将被覆盖，是否继续？\n（取消：本页面将不启用自动保存）')) {
+          this.clearLocalSaveTimer();
+          return false;
+        }
+        this.setState({showLocalData: false}, this.onLocalSave);
+      }
       this.onLocalSave();
     }, local_save_time * 1000);
   }
@@ -133,6 +141,9 @@ class EditView extends React.Component {
   }
   onLocalSave = () => {
     if (this.state.hasEdit) {
+      if (this.state.showLocalData && !confirm('未保存的旧数据将被覆盖，您确定要执行？')) {
+        return false;
+      }
       const date = this.formatDate();
       const data = JSON.stringify({
         baseInfo: this.baseInfo,
@@ -141,7 +152,7 @@ class EditView extends React.Component {
         created: date,
       });
       localStorage.setItem(JBLOG_LOCAL_SAVE, data);
-      this.setState({localSaveText: `存于：${date}`});
+      this.setState({localSaveText: `存于：${date}`, showLocalData: false});
     } else {
       alert('请先编辑文章');
     }
@@ -222,27 +233,34 @@ class EditView extends React.Component {
         });
     });
   }
-  localDataLoad = () => {
+  localDataCheck = () => {
     let data = localStorage.getItem(JBLOG_LOCAL_SAVE);
-    if (data && confirm('检测到有上次未完成的数据，是否应用')) {
-      try {
-        data = JSON.parse(data);
-        this.baseInfo = data.baseInfo;
-        this.setState({
-          mdText: data.mdText,
-          page_id: data.page_id,
-          localSaveText: data.created,
-        });
-        return true;
-      } catch (err) {
-        console.log(err);
-        alert('数据已损坏，将自动删除');
-        this.clearLocalSaveTimer();
-        localStorage.removeItem(JBLOG_LOCAL_SAVE);
+    data && this.setState({showLocalData: true});
+  }
+  localDataLoad = () => {
+    if (confirm('此操作将覆盖现在的页面数据，是否继续？')) {
+      let data = localStorage.getItem(JBLOG_LOCAL_SAVE);
+      if (data) {
+        try {
+          data = JSON.parse(data);
+          this.baseInfo = data.baseInfo;
+          this.setState({
+            mdText: data.mdText,
+            page_id: data.page_id,
+            localSaveText: data.created,
+            showLocalData: false,
+          });
+          return true;
+        } catch (err) {
+          console.log(err);
+          alert('数据已损坏，将自动删除');
+          this.clearLocalSaveTimer();
+          localStorage.removeItem(JBLOG_LOCAL_SAVE);
+          return false;
+        }
+      } else {
         return false;
       }
-    } else {
-      return false;
     }
   }
   setViewContent = (value) => {
@@ -276,11 +294,11 @@ class EditView extends React.Component {
     let viewContent = this.convertBaseInfo2Html(this.baseInfo);
     this.setState({viewContent});
     // 只在客户端获取
-    const checkCb = () => !this.localDataLoad() && !isNaN(pageId) && this.getEditData(pageId);
+    const checkCb = () => {this.localDataCheck(); !isNaN(pageId) && this.getEditData(pageId)}
     this.checkLogin(checkCb).then(checkCb);
   }
   render () {
-    const { mdText, viewContent, localSaveText, hasEdit } = this.state
+    const { mdText, viewContent, localSaveText, hasEdit, showLocalData } = this.state
     return (
       <div className='edit-page clearfix'>
         <LoginModal ref={(component) => LoginModal.instance = component}/>
@@ -300,8 +318,12 @@ class EditView extends React.Component {
             <p className='view-title'>
               预览
               <span className='btn-group'>
-                <span className='local-save-text'>{localSaveText}</span>
-                <span className='btn local-save-btn' onClick={this.onLocalSave}>本地保存</span>
+                <span className='local-save-text'>{showLocalData ? '检测到有上次未完成的数据' : localSaveText}</span>
+                {
+                  showLocalData ? 
+                    <span className='btn local-save-btn' onClick={this.localDataLoad}>加载</span> :
+                    <span className='btn local-save-btn' onClick={this.onLocalSave}>本地保存</span>
+                }
                 <span className='btn save-btn' onClick={this.onSave}>保存</span>
               </span>
             </p>
