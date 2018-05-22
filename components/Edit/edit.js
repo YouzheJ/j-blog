@@ -10,7 +10,8 @@ import LoginModal from '../Modal/login'
 const { SAVE_DATA, PAGE_GET, CHECK_LOGIN, UPDATE_DATA } = constant.api;
 const { BASEINFO_REG, FILTER_TAGS } = constant.reg;
 const JBLOG_LOCAL_SAVE = 'JBLOG_LOCAL_SAVE';
-const default_save_text = '每 1 分钟自动保存';
+const local_save_time = 20; // 秒
+const default_save_text = `每 ${local_save_time} 秒自动保存`;
 
 class EditView extends React.Component {
   converter = null
@@ -41,7 +42,7 @@ class EditView extends React.Component {
   autoLocalSave = () => {
     this.localSaveTimer = setInterval(() => {
       this.onLocalSave();
-    }, 1000);
+    }, local_save_time * 1000);
   }
   convertBaseInfo2Html = (baseInfo) => {
     let html = `<div class='base-info'>`
@@ -223,17 +224,18 @@ class EditView extends React.Component {
   }
   localDataLoad = () => {
     let data = localStorage.getItem(JBLOG_LOCAL_SAVE);
-    if (confirm('检测到有上次未完成的数据，是否应用')) {
+    if (data && confirm('检测到有上次未完成的数据，是否应用')) {
       try {
         data = JSON.parse(data);
         this.baseInfo = data.baseInfo;
         this.setState({
           mdText: data.mdText,
           page_id: data.page_id,
-          localSaveText: created,
+          localSaveText: data.created,
         });
         return true;
       } catch (err) {
+        console.log(err);
         alert('数据已损坏，将自动删除');
         this.clearLocalSaveTimer();
         localStorage.removeItem(JBLOG_LOCAL_SAVE);
