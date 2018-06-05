@@ -10,14 +10,14 @@ export default class MyDocument extends Document {
           <link rel='shortcut icon' href='/static/favicon.ico'/>
           <link rel="stylesheet" href="/_next/static/style.css" />
           <link rel='stylesheet' href='//at.alicdn.com/t/font_573398_hpkll2uh871ra4i.css'/>
-          {/* <script type='text/javascript' src='/static/plugins/showdown/showdown.min.js'></script> */}
+          {/* <script scr='text/javascript' src='/static/plugins/showdown/showdown.min.js'></script> */}
         </Head>
         <body>
           <Header />
           <Main />
           <NextScript />
           <script>{`var _hmt = _hmt || [];`}</script>
-          <script type='https://hm.baidu.com/hm.js?1d7a474f78f03e11dca9a834abef384e'></script>
+          <script scr='https://hm.baidu.com/hm.js?1d7a474f78f03e11dca9a834abef384e'></script>
         </body>
       </html>
     )
