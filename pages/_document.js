@@ -17,7 +17,7 @@ export default class MyDocument extends Document {
           <Main />
           <NextScript />
           <script>{`var _hmt = _hmt || [];`}</script>
-          <script scr='https://hm.baidu.com/hm.js?1d7a474f78f03e11dca9a834abef384e'></script>
+          <script scr='text/javascript' src='/static/baidu.js'></script>
         </body>
       </html>
     )
