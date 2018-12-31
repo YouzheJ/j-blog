@@ -5,8 +5,6 @@ import constant from '../../constant'
 
 const { PAGE_GET } = constant.api;
 
-let dangerHtml = '';
-
 class PageView extends React.Component {
   constructor(props) {
     super(props);
@@ -42,7 +40,6 @@ class PageView extends React.Component {
   render () {
     const { page } = this.state;
     const { author, categories, created, html, id, modified, tags = '', title } = page;
-    !dangerHtml && html && (dangerHtml = html);
     return (
       <div style={{marginTop: '50px'}}>
         <div className='page-wrapper md-base'>
@@ -63,7 +60,7 @@ class PageView extends React.Component {
             {
               <div
                 className='md-base'
-                dangerouslySetInnerHTML={{__html: dangerHtml}}
+                dangerouslySetInnerHTML={{__html: html}}
               />
             }
             </div>

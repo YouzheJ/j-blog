@@ -133,10 +133,13 @@ class EditView extends React.Component {
     // 修复tab键不能正常使用的bug
     let { value, selectionStart, selectionEnd } = e.target
     if (e.keyCode === 9 || e.which === 9) {
-      e.preventDefault()
+      e.preventDefault();
       value = value.substring(0, selectionStart) + '\t' + value.substring(selectionEnd)
       e.target.selectionEnd = selectionStart + 1
       this.setState({mdText: value})
+    } else if (e.keyCode === 83) {
+      e.preventDefault();
+      this.onLocalSave();
     }
   }
   onLocalSave = () => {
