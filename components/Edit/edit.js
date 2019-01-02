@@ -4,7 +4,7 @@ import './edit.scss'
 import showdown from 'showdown'
 import constant from '../../constant'
 import { isArray } from '@youzhej/jutils/src'
-import { fetch2 } from '../../utils'
+import { fetch2, debounce } from '../../utils'
 import LoginModal from '../Modal/login'
 
 const { SAVE_DATA, PAGE_GET, CHECK_LOGIN, UPDATE_DATA } = constant.api;
@@ -39,6 +39,7 @@ class EditView extends React.Component {
     }
     let value = this.filterTags(e.target.value)
     this.setViewContent(value);
+    this.record();
   }
   autoLocalSave = () => {
     this.localSaveTimer = setInterval(() => {
@@ -137,9 +138,20 @@ class EditView extends React.Component {
       value = value.substring(0, selectionStart) + '\t' + value.substring(selectionEnd)
       e.target.selectionEnd = selectionStart + 1
       this.setState({mdText: value})
-    } else if (e.keyCode === 83 && (e.ctrlKey || e.metaKey)) {
-      e.preventDefault();
-      this.onLocalSave();
+    } else if (e.ctrlKey || e.metaKey) {
+      if (e.keyCode === 83) {
+        // 保存
+        e.preventDefault();
+        this.onLocalSave();
+      } else if (e.keyCode === 90) {
+        // 撤销
+        e.preventDefault();
+        this.undo();
+      } else if (e.keyCode === 89) {
+        // 重做
+        e.preventDefault();
+        this.redo();
+      }
     }
   }
   onLocalSave = () => {
@@ -194,6 +206,35 @@ class EditView extends React.Component {
       console.log(err)
       alert(err.message);
     });
+  }
+  editStack = []; // 编辑的记录
+  resetStack = []; // 被撤销的记录
+  record = debounce((val) => {
+    const value = val || this.state.mdText;
+    if (!value) return;
+    this.editStack.push(value);
+    if (this.editStack.length > 50) {
+      this.editStack.shift();
+    }
+  });
+  undo = () => {
+    if (!this.editStack.length) return;
+
+    const lastValue = this.editStack.pop();
+    this.resetStack.push(lastValue);
+    if (this.resetStack.length > 50) this.resetStack.shift();
+    const value = this.editStack[this.editStack.length - 1];
+    if (!value) return;
+    this.setState({viewContent: this.getViewContent(value), mdText: value});
+  }
+  redo = () => {
+    if (!this.resetStack.length) return;
+
+    const value = this.resetStack[this.resetStack.length - 1];
+    const lastVal = this.resetStack.pop();
+    this.editStack.push(lastVal);
+    if (!value) return;
+    this.setState({viewContent: this.getViewContent(value), mdText: value});
   }
   checkLogin = (cb) => {
     return new Promise((resolve, reject) => {
@@ -267,11 +308,13 @@ class EditView extends React.Component {
     }
   }
   setViewContent = (value) => {
+    this.setState({viewContent: this.getViewContent(value), mdText: value})
+  }
+  getViewContent = (value) => {
     // 截取开头的标题，标签，目录等部分
     this.baseInfo = this.getBaseInfo(value)
-    let viewContent = this.convertBaseInfo2Html(this.baseInfo) +
-                      this.converter.makeHtml(value.replace(this.baseInfo.matchStr, ''))
-    this.setState({viewContent, mdText: value})
+    return this.convertBaseInfo2Html(this.baseInfo) +
+                  this.converter.makeHtml(value.replace(this.baseInfo.matchStr, ''));
   }
   clearLocalSaveTimer = () => {
     clearInterval(this.localSaveTimer);
